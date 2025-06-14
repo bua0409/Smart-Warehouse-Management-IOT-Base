@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "Package")
-public class Package {
+@Document(collection = "product")
+public class product {
 
     @Id
     private String rfid;
@@ -18,8 +18,8 @@ public class Package {
     private String time_out;
 
 
-    public Package(){}
-    public Package(String rfid, String time_out, String time_in, String block, String zone, String beacon_name) {
+    public product(){}
+    public product(String rfid, String time_out, String time_in, String block, String zone, String beacon_name) {
         this.rfid = rfid;
         this.time_out = time_out;
         this.time_in = time_in;

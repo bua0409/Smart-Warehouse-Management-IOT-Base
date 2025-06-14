@@ -1,17 +1,15 @@
 package datn.springboot.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import datn.springboot.entity.Package;
-import datn.springboot.repo.PackageRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 
-public interface packageService {
-    Package savePackage(Package aPackage);
+public interface PackageService {
+    Package savePackage(Package Package);
     List<Package> getAllPackages();
     Optional<Package> getPackageById(String id);
-    Package updatePackage(String id, Package aPackage);
+    Package updatePackage(String id, Package Package);
     void deletePackage(String id);
 }
