@@ -8,8 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "package")
 public class Package {
-
     @Id
+    private String id;
+
     private String poId;
     private String productId;
     private String rfid;
