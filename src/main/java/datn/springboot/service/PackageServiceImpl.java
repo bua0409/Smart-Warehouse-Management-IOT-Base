@@ -44,16 +44,18 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
-    public Package updatePackageByRfid(String rfid, Package Package) {
-        Package pack = PackageRepository.findAll().stream().filter(x -> x.getRfid().equals(rfid)).findFirst().orElse(null);
-        if (pack != null) {
-            pack.setBlock(Package.getBlock());
-            pack.setZone(Package.getZone());
-            pack.setTime_in(Package.getTime_in());
-            return PackageRepository.save(pack);
-        }
-        return null;
+    public Package updatePackageByRfid(String rfid, Package updated) {
+        Package existing = PackageRepository.findByRfid(rfid);
+        if (existing == null) return null;
+
+        existing.setBlock(updated.getBlock());
+        existing.setZone(updated.getZone());
+        existing.setTime_in(updated.getTime_in());
+        existing.setTime_out(updated.getTime_out());
+
+        return PackageRepository.save(existing);  // Lúc này, object có ID gốc → Mongo sẽ cập nhật thay vì tạo mới
     }
+
 
     @Override
     public Optional<Package> getPackageByRfid(String rfid) {

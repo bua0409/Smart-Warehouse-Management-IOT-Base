@@ -32,6 +32,9 @@ public class Package {
         this.zone = zone;
         this.beacon_name = beacon_name;
     }
+    public String getId() {
+        return id;
+    }
     public String getPoId() {
         return poId;
     }
