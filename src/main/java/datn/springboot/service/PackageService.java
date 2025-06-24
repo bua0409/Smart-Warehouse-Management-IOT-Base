@@ -12,4 +12,6 @@ public interface PackageService {
     Optional<Package> getPackageById(String id);
     Package updatePackage(String id, Package Package);
     void deletePackage(String id);
+    Package updatePackageByRfid(String rfid, Package Package);
+    Optional<Package> getPackageByRfid(String rfid);
 }

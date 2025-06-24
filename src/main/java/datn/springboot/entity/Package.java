@@ -6,10 +6,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "Package")
+@Document(collection = "package")
 public class Package {
 
     @Id
+    private String poId;
+    private String productId;
     private String rfid;
     private String beacon_name;
     private String zone;
@@ -19,7 +21,9 @@ public class Package {
 
 
     public Package(){}
-    public Package(String rfid, String time_out, String time_in, String block, String zone, String beacon_name) {
+    public Package(String poId,String productId,String rfid, String time_out, String time_in, String block, String zone, String beacon_name) {
+        this.poId = poId;
+        this.productId = productId;
         this.rfid = rfid;
         this.time_out = time_out;
         this.time_in = time_in;
@@ -27,7 +31,18 @@ public class Package {
         this.zone = zone;
         this.beacon_name = beacon_name;
     }
-
+    public String getPoId() {
+        return poId;
+    }
+    public void setPoId(String poId) {
+        this.poId = poId;
+    }
+    public String getProductId() {
+        return productId;
+    }
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
     public String getRfid() {
         return rfid;
     }

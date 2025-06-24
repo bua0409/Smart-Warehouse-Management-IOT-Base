@@ -40,6 +40,11 @@ public class PackageController {
         return ResponseEntity.ok(PackageService.updatePackage(id, Package));
     }
 
+    @PutMapping("/update/{rfid}")
+    public ResponseEntity<Package> updatePackageByRfid(@PathVariable String rfid, @RequestBody Package Package) {
+        return ResponseEntity.ok(PackageService.updatePackageByRfid(rfid, Package));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePackage(@PathVariable String id) {
         PackageService.deletePackage(id);
