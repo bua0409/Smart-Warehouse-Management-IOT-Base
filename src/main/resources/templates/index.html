@@ -149,15 +149,15 @@
         <td>${pkg.time_out || ''}</td>
         <td>
           <button class="btn btn-sm btn-outline-warning me-1" onclick='editPackage(${JSON.stringify(pkg)})'><i class="bi bi-pencil"></i></button>
-          <button class="btn btn-sm btn-outline-danger" onclick='deletePackage("${pkg.rfid}")'><i class="bi bi-trash"></i></button>
+          <button class="btn btn-sm btn-outline-danger" onclick='deletePackage("${pkg.id}")'><i class="bi bi-trash"></i></button>
         </td>`;
             tbody.appendChild(row);
         });
     }
 
-    async function deletePackage(rfid) {
+    async function deletePackage(id) {
         if (!confirm('Delete this package?')) return;
-        await fetch(`${apiBase}/${rfid}`, { method: 'DELETE' });
+        await fetch(`${apiBase}/${id}`, { method: 'DELETE' });
         fetchPackages();
     }
 
