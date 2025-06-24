@@ -19,8 +19,10 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
-    public Package savePackage(Package Package) {
-        return PackageRepository.save(Package);
+    public Package savePackage(Package pkg) {
+        Package existing = PackageRepository.findByRfid(pkg.getRfid());
+        if (existing != null) return existing; // hoặc throw exception nếu muốn
+        return PackageRepository.save(pkg);
     }
 
     @Override
@@ -46,7 +48,10 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public Package updatePackageByRfid(String rfid, Package updated) {
         Package existing = PackageRepository.findByRfid(rfid);
-        if (existing == null) return null;
+        if (existing == null){
+            System.out.println("❌ Không tìm thấy package với RFID: " + rfid);
+            throw new RuntimeException("Không tìm thấy RFID: " + rfid);
+        };
 
         existing.setBlock(updated.getBlock());
         existing.setZone(updated.getZone());

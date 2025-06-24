@@ -2,6 +2,7 @@ package datn.springboot.controller;
 
 import datn.springboot.entity.Package;
 import datn.springboot.service.PackageService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,8 @@ public class PackageController {
     }
 
     @PostMapping
-    public ResponseEntity<Package> createPackage(@RequestBody Package Package) {
+    public ResponseEntity<Package> createPackage(@RequestBody Package Package, HttpServletRequest request) {
+        System.out.println("📥 [Controller] POST received: " + Package.getRfid() + " from IP=" + request.getRemoteAddr());
         return ResponseEntity.ok(PackageService.savePackage(Package));
     }
 
