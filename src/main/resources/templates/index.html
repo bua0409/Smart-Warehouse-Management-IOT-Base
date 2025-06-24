@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Smart Warehouse Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -113,6 +113,7 @@
             <table class="table table-hover align-middle">
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>RFID</th>
                     <th>Beacon</th>
                     <th>Zone</th>
@@ -139,23 +140,24 @@
         data.forEach(pkg => {
             const row = document.createElement('tr');
             row.innerHTML = `
-          <td>${pkg.rfid}</td>
-          <td>${pkg.beacon_name}</td>
-          <td>${pkg.zone}</td>
-          <td>${pkg.block}</td>
-          <td>${pkg.time_in}</td>
-          <td>${pkg.time_out || ''}</td>
-          <td>
-            <button class="btn btn-sm btn-outline-warning me-1" onclick='editPackage(${JSON.stringify(pkg)})'><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-outline-danger" onclick='deletePackage("${pkg.rfid}")'><i class="bi bi-trash"></i></button>
-          </td>`;
+        <td>${pkg.id}</td>
+        <td>${pkg.rfid}</td>
+        <td>${pkg.beacon_name}</td>
+        <td>${pkg.zone}</td>
+        <td>${pkg.block}</td>
+        <td>${pkg.time_in}</td>
+        <td>${pkg.time_out || ''}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-warning me-1" onclick='editPackage(${JSON.stringify(pkg)})'><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-outline-danger" onclick='deletePackage("${pkg.rfid}")'><i class="bi bi-trash"></i></button>
+        </td>`;
             tbody.appendChild(row);
         });
     }
 
-    async function deletePackage(id) {
+    async function deletePackage(rfid) {
         if (!confirm('Delete this package?')) return;
-        await fetch(`${apiBase}/${id}`, { method: 'DELETE' });
+        await fetch(`${apiBase}/${rfid}`, { method: 'DELETE' });
         fetchPackages();
     }
 
