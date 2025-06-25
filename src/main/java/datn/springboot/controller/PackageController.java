@@ -26,8 +26,8 @@ public class PackageController {
 
     @PostMapping
     public ResponseEntity<?> createPackage(@RequestBody Package Package, HttpServletRequest request) {
-        Optional<Package> ex = packageRepository.findByRfid(Package.getRfid());
-        if (ex.isPresent()) {
+        Package ex = packageRepository.findByRfid(Package.getRfid());
+        if (ex != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("RFID:" +Package.getRfid() +"existed");        }
         System.out.println("📥 [Controller] POST received: " + Package.getRfid() + " from IP=" + request.getRemoteAddr());
         return ResponseEntity.ok(PackageService.savePackage(Package));
