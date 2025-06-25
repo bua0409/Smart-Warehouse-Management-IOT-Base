@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "package")
 public class Package {
-    @Id
-    private String id;
+//    @Id
+//    private String id;
 
     private String poId;
     private String productId;
@@ -32,9 +32,9 @@ public class Package {
         this.zone = zone;
         this.beacon_name = beacon_name;
     }
-    public String getId() {
-        return id;
-    }
+//    public String getId() {
+//        return id;
+//    }
     public String getPoId() {
         return poId;
     }
