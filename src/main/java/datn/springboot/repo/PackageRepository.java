@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface PackageRepository extends MongoRepository<Package,String> {
-    Optional<Package> findByRfid(String rfid);
+    Package findByRfid(String rfid);
 
 }
