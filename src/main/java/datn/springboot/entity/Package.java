@@ -23,6 +23,7 @@ public class Package {
     private String block;
     private String time_in;
     private String time_out;
+    private PackageStatus status = PackageStatus.IMPORTED; // Mặc định là 'Nhập Kho'
 
 
     public Package(){}
@@ -97,5 +98,13 @@ public class Package {
 
     public void setTime_out(String time_out) {
         this.time_out = time_out;
+    }
+
+    public PackageStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PackageStatus status) {
+        this.status = status;
     }
 }

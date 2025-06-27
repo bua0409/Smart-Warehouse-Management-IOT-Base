@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard – Hung's Warehouse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <style>
+        body { margin:0; background:#f5f7fa; font-family:'Segoe UI',sans-serif; }
+        .sidebar {
+            background: #2c3e50; padding:1rem 0.5rem;
+            position: fixed; top:0; left:0; width:fit-content;
+            height:100vh; overflow-y:auto; z-index:1000;
+            display:flex; flex-direction:column; gap:0.5rem;
+        }
+        .sidebar .nav-title {
+            color:#bdc3c7; font-size:.85rem;
+            text-transform:uppercase; padding:0 1rem;
+        }
+        .sidebar .nav-link {
+            color:#ecf0f1; padding:10px 16px;
+            border-radius:5px; display:flex;
+            align-items:center; gap:.5rem; white-space:nowrap;
+        }
+        .sidebar .nav-link.active,
+        .sidebar .nav-link:hover {
+            background:#34495e; border-left:4px solid #6c75f0;
+        }
+        .main-content {
+            padding:2rem 1.5rem;
+            transition:margin-left .3s;
+        }
+        @media (max-width:991.98px) {
+            .sidebar { position:relative; width:100%; height:auto; flex-direction:row; overflow-x:auto; }
+            .main-content { margin-left:0!important; padding-top:1rem; }
+            .sidebar .nav-title { display:none; }
+        }
+        .stats-row .card {
+            border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.05);
+            height:100%;
+        }
+        .stats-row .card h6 { color:#444; font-weight:600; }
+        .stats-row .card h4 { font-size:1.6rem; font-weight:bold; }
+        h4.section-title { color:#2c3e50; margin-bottom:1rem; }
+        .table-container { overflow-x:auto; }
+        table { width:100%; border-spacing:0 1rem; border-collapse:separate; }
+        table thead { background:#6c75f0; color:#fff; }
+        table thead th { padding:.75rem; }
+        table tbody tr {
+            background:#fff; border-radius:12px;
+            box-shadow:0 2px 8px rgba(0,0,0,.04);
+        }
+        table tbody td { padding:.75rem; vertical-align:middle; }
+    </style>
+</head>
+<body>
+<div id="sidebar-container"></div>
+
+<div class="main-content">
+    <!-- Zone Overview -->
+    <h4 class="section-title"><i class="bi bi-geo"></i> Zone Overview</h4>
+    <div class="row stats-row g-3 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center p-3 bg-light">
+                <h6>Total Zones</h6><h4 id="stat-zones">0</h4>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center p-3 bg-light">
+                <h6>Total Shelves</h6><h4 id="stat-shelves">0</h4>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center p-3 bg-light">
+                <h6>Total Blocks</h6><h4 id="stat-blocks">0</h4>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center p-3 bg-light">
+                <h6>Empty Blocks</h6><h4 id="stat-blocks-empty">0</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Package Summary -->
+    <h4 class="section-title"><i class="bi bi-box"></i> Package Summary</h4>
+    <div class="row stats-row g-3 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center p-3 bg-light">
+                <h6>Total Packages</h6><h4 id="stat-packages">0</h4>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center p-3 bg-light">
+                <h6>Imported</h6><h4 id="stat-imported">0</h4>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center p-3 bg-light">
+                <h6>On Shelf</h6><h4 id="stat-onshelf">0</h4>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center p-3 bg-light">
+                <h6>Exported</h6><h4 id="stat-exported">0</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Packages Table -->
+    <div class="card p-4">
+        <h4 class="section-title"><i class="bi bi-clock-history"></i> Recent Packages</h4>
+        <div class="table-container">
+            <table class="table align-middle mb-0">
+                <thead>
+                <tr><th>ID</th><th>RFID</th><th>Beacon</th><th>Status</th><th>Time In</th></tr>
+                </thead>
+                <tbody id="recentTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>
+    function updateMainMargin() {
+        const sidebar = document.getElementById('sidebar');
+        const main = document.querySelector('.main-content');
+        if (sidebar && window.innerWidth >= 992) {
+            main.style.marginLeft = sidebar.offsetWidth + 'px';
+        } else {
+            main.style.marginLeft = '0';
+        }
+    }
+
+    fetch('/sidebar')
+        .then(r => r.text())
+        .then(html => {
+            document.getElementById('sidebar-container').innerHTML = html;
+            updateMainMargin();
+        });
+
+    window.addEventListener('resize', updateMainMargin);
+
+    // --- Mock data ---
+    const zones = ['A','B','C','D'];
+    const shelves = ['A01','A02','B01','C01'];
+    const blocks = [
+        {id:'A01-1', full:true}, {id:'A01-2', full:false},
+        {id:'B01-1', full:true}, {id:'C01-2', full:false}
+    ];
+    const packages = [
+        {id:'PK1001',rfid:'RF1001',beacon:'B1',status:'IMPORTED', time_in:'2025-06-25 10:05'},
+        {id:'PK1002',rfid:'RF1002',beacon:'B2',status:'ON_SHELF', time_in:'2025-06-24 14:20'},
+        {id:'PK1003',rfid:'RF1003',beacon:'B3',status:'EXPORTED', time_in:'2025-06-23 09:15'}
+    ];
+
+    function refreshDashboard() {
+        document.getElementById('stat-zones').textContent = zones.length;
+        document.getElementById('stat-shelves').textContent = shelves.length;
+        document.getElementById('stat-blocks').textContent = blocks.length;
+        document.getElementById('stat-blocks-empty').textContent = blocks.filter(b => !b.full).length;
+
+        document.getElementById('stat-packages').textContent = packages.length;
+        document.getElementById('stat-imported').textContent = packages.filter(p=>p.status==='IMPORTED').length;
+        document.getElementById('stat-onshelf').textContent = packages.filter(p=>p.status==='ON_SHELF').length;
+        document.getElementById('stat-exported').textContent = packages.filter(p=>p.status==='EXPORTED').length;
+
+        const rt = document.getElementById('recentTable');
+        rt.innerHTML = '';
+        packages.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${p.id}</td><td>${p.rfid}</td><td>${p.beacon}</td><td>${p.status}</td><td>${p.time_in}</td>`;
+            rt.appendChild(tr);
+        });
+    }
+
+    refreshDashboard();
+</script>
+</body>
+</html>
