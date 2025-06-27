@@ -1,5 +1,8 @@
 package datn.springboot.entity;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "block")
 public class Block {
     private String id;
     private Boolean hasPackage;

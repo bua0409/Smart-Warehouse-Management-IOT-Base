@@ -1,181 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard – Hung's Warehouse</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
     <style>
-        body { margin:0; background:#f5f7fa; font-family:'Segoe UI',sans-serif; }
-        .sidebar {
-            background: #2c3e50; padding:1rem 0.5rem;
-            position: fixed; top:0; left:0; width:fit-content;
-            height:100vh; overflow-y:auto; z-index:1000;
-            display:flex; flex-direction:column; gap:0.5rem;
+        body { margin:0; font-family:'Segoe UI',sans-serif; background:#f5f7fa; color:#2c3e50; }
+        .sidebar { background:#2c3e50; padding:1rem 0.5rem; position:fixed; top:0; left:0; height:100vh; width:220px; z-index:1000; overflow-y:auto; }
+        .sidebar .nav-link { color:#ecf0f1; display:flex; align-items:center; gap:0.5rem; padding:10px 16px; border-radius:5px; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background:#34495e; border-left:4px solid #6c75f0; }
+        .main-content { margin-left:220px; padding:2rem; }
+        @media(max-width:991.98px){ .main-content{margin-left:0; padding-top:7rem;} }
+
+        .card.stat-card {
+            border-radius:12px;
+            box-shadow:0 4px 16px rgba(0,0,0,0.05);
+            transition:transform .25s ease, box-shadow .25s ease;
+            background:white;
         }
-        .sidebar .nav-title {
-            color:#bdc3c7; font-size:.85rem;
-            text-transform:uppercase; padding:0 1rem;
+        .card.stat-card:hover {
+            transform:translateY(-5px);
+            box-shadow:0 6px 20px rgba(0,0,0,0.1);
         }
-        .sidebar .nav-link {
-            color:#ecf0f1; padding:10px 16px;
-            border-radius:5px; display:flex;
-            align-items:center; gap:.5rem; white-space:nowrap;
+        .section-title { color:#6c75f0; text-transform:uppercase; margin-bottom:1.5rem; letter-spacing:.04em; }
+
+        .alert-badge {
+            position:absolute; top:.75rem; right:1rem;
+            padding:.5em 1em; font-size:.9rem;
+            border-radius:1.5rem;
         }
-        .sidebar .nav-link.active,
-        .sidebar .nav-link:hover {
-            background:#34495e; border-left:4px solid #6c75f0;
+
+        .table-card {
+            border-radius:12px;
+            box-shadow:0 4px 16px rgba(0,0,0,0.05);
+            background:#fff;
+            position:relative;
         }
-        .main-content {
-            padding:2rem 1.5rem;
-            transition:margin-left .3s;
-        }
-        @media (max-width:991.98px) {
-            .sidebar { position:relative; width:100%; height:auto; flex-direction:row; overflow-x:auto; }
-            .main-content { margin-left:0!important; padding-top:1rem; }
-            .sidebar .nav-title { display:none; }
-        }
-        .stats-row .card {
-            border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.05);
-            height:100%;
-        }
-        .stats-row .card h6 { color:#444; font-weight:600; }
-        .stats-row .card h4 { font-size:1.6rem; font-weight:bold; }
-        h4.section-title { color:#2c3e50; margin-bottom:1rem; }
-        .table-container { overflow-x:auto; }
-        table { width:100%; border-spacing:0 1rem; border-collapse:separate; }
-        table thead { background:#6c75f0; color:#fff; }
-        table thead th { padding:.75rem; }
-        table tbody tr {
-            background:#fff; border-radius:12px;
-            box-shadow:0 2px 8px rgba(0,0,0,.04);
-        }
-        table tbody td { padding:.75rem; vertical-align:middle; }
+        .heatmap { display:grid; grid-template-columns:repeat(auto-fit,minmax(30px,1fr)); gap:4px; justify-items:center; }
+        .heatmap div { width:30px; height:30px; border-radius:4px; }
+        .h-0 { background:#e0e0e0; } .h-4 { background:#08519c; }
     </style>
 </head>
 <body>
+
+<!-- Sidebar container -->
 <div id="sidebar-container"></div>
 
+<!-- MAIN CONTENT -->
 <div class="main-content">
-    <!-- Zone Overview -->
-    <h4 class="section-title"><i class="bi bi-geo"></i> Zone Overview</h4>
-    <div class="row stats-row g-3 mb-4">
-        <div class="col-md-3 col-sm-6">
-            <div class="card text-center p-3 bg-light">
-                <h6>Total Zones</h6><h4 id="stat-zones">0</h4>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card text-center p-3 bg-light">
-                <h6>Total Shelves</h6><h4 id="stat-shelves">0</h4>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card text-center p-3 bg-light">
-                <h6>Total Blocks</h6><h4 id="stat-blocks">0</h4>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card text-center p-3 bg-light">
-                <h6>Empty Blocks</h6><h4 id="stat-blocks-empty">0</h4>
-            </div>
-        </div>
+    <h4 class="section-title"><i class="bi bi-geo" data-bs-toggle="tooltip" title="Total Warehouse Zones"></i> Overview</h4>
+    <div class="row g-3 mb-4">
+        <div class="col-md-3"><div class="card stat-card text-center p-3" data-bs-toggle="tooltip" title="All zones in the warehouse"><h6>Total Zones</h6><h4 id="stat-zones">0</h4></div></div>
+        <div class="col-md-3"><div class="card stat-card text-center p-3" data-bs-toggle="tooltip" title="Number of shelves"><h6>Total Shelves</h6><h4 id="stat-shelves">0</h4></div></div>
+        <div class="col-md-3"><div class="card stat-card text-center p-3" data-bs-toggle="tooltip" title="Total available blocks"><h6>Total Blocks</h6><h4 id="stat-blocks">0</h4></div></div>
+        <div class="col-md-3"><div class="card stat-card text-center p-3" data-bs-toggle="tooltip" title="Blocks that currently hold packages"><h6>Occupied Blocks</h6><h4 id="stat-blocks-occup">0</h4></div></div>
     </div>
 
-    <!-- Package Summary -->
-    <h4 class="section-title"><i class="bi bi-box"></i> Package Summary</h4>
-    <div class="row stats-row g-3 mb-4">
-        <div class="col-md-3 col-sm-6">
-            <div class="card text-center p-3 bg-light">
-                <h6>Total Packages</h6><h4 id="stat-packages">0</h4>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card text-center p-3 bg-light">
-                <h6>Imported</h6><h4 id="stat-imported">0</h4>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card text-center p-3 bg-light">
-                <h6>On Shelf</h6><h4 id="stat-onshelf">0</h4>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card text-center p-3 bg-light">
-                <h6>Exported</h6><h4 id="stat-exported">0</h4>
-            </div>
-        </div>
+    <h4 class="section-title"><i class="bi bi-box" data-bs-toggle="tooltip" title="Package Summary"></i> Packages</h4>
+    <div class="row g-3 mb-4">
+        <div class="col-md-3"><div class="card stat-card text-center p-3"><h6>Total</h6><h4 id="stat-pkgs">0</h4></div></div>
+        <div class="col-md-3"><div class="card stat-card text-center p-3"><h6>Imported</h6><h4 id="stat-imported">0</h4></div></div>
+        <div class="col-md-3"><div class="card stat-card text-center p-3"><h6>On Shelf</h6><h4 id="stat-onshelf">0</h4></div></div>
+        <div class="col-md-3"><div class="card stat-card text-center p-3"><h6>Exported</h6><h4 id="stat-exported">0</h4></div></div>
     </div>
 
-    <!-- Recent Packages Table -->
-    <div class="card p-4">
-        <h4 class="section-title"><i class="bi bi-clock-history"></i> Recent Packages</h4>
-        <div class="table-container">
-            <table class="table align-middle mb-0">
-                <thead>
-                <tr><th>ID</th><th>RFID</th><th>Beacon</th><th>Status</th><th>Time In</th></tr>
-                </thead>
-                <tbody id="recentTable"></tbody>
-            </table>
-        </div>
+    <div class="card table-card p-4 mb-4">
+        <h5 class="mb-3"><i class="bi bi-clock-history me-2"></i>Recent Packages</h5>
+        <span id="delayAlert" class="alert-badge d-none"></span>
+        <table class="table table-hover mb-0">
+            <thead class="table-primary"><tr><th>ID</th><th>RFID</th><th>Beacon</th><th>Status</th><th>Time In</th></tr></thead>
+            <tbody id="recentTable"></tbody>
+        </table>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6"><div class="card p-3"><h5>Status Chart</h5><canvas id="pkgChart"></canvas></div></div>
+        <div class="col-md-6"><div class="card p-3"><h5>Block Heatmap</h5><div id="blockHeatmap" class="heatmap"></div></div></div>
     </div>
 </div>
 
-<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    function updateMainMargin() {
-        const sidebar = document.getElementById('sidebar');
-        const main = document.querySelector('.main-content');
-        if (sidebar && window.innerWidth >= 992) {
-            main.style.marginLeft = sidebar.offsetWidth + 'px';
-        } else {
-            main.style.marginLeft = '0';
-        }
+    // Activate tooltips
+    document.addEventListener('DOMContentLoaded', () => {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+    });
+
+    function adjustMainMargin(){
+        const sb = document.querySelector('#sidebar-container .sidebar');
+        const mc = document.querySelector('.main-content');
+        if(!sb || !mc) return;
+        mc.style.marginLeft = (window.innerWidth >= 992) ? sb.offsetWidth + 'px' : '0';
     }
 
-    fetch('/sidebar')
-        .then(r => r.text())
-        .then(html => {
-            document.getElementById('sidebar-container').innerHTML = html;
-            updateMainMargin();
-        });
+    fetch('/sidebar').then(r => r.text()).then(html => {
+        document.getElementById('sidebar-container').innerHTML = html;
+        adjustMainMargin();
+        new MutationObserver(adjustMainMargin).observe(document.querySelector('.sidebar'), { attributes: true });
+    });
 
-    window.addEventListener('resize', updateMainMargin);
+    window.addEventListener('resize', adjustMainMargin);
 
-    // --- Mock data ---
-    const zones = ['A','B','C','D'];
-    const shelves = ['A01','A02','B01','C01'];
-    const blocks = [
-        {id:'A01-1', full:true}, {id:'A01-2', full:false},
-        {id:'B01-1', full:true}, {id:'C01-2', full:false}
-    ];
-    const packages = [
-        {id:'PK1001',rfid:'RF1001',beacon:'B1',status:'IMPORTED', time_in:'2025-06-25 10:05'},
-        {id:'PK1002',rfid:'RF1002',beacon:'B2',status:'ON_SHELF', time_in:'2025-06-24 14:20'},
-        {id:'PK1003',rfid:'RF1003',beacon:'B3',status:'EXPORTED', time_in:'2025-06-23 09:15'}
-    ];
+    async function refresh(){
+        const [zones,shelves,blocks,blocksOcc,pkgs] = await Promise.all([
+            fetch('/api/Zone').then(r=>r.json()),
+            fetch('/api/Shelf').then(r=>r.json()),
+            fetch('/api/Blocks').then(r=>r.json()),
+            fetch('/api/Blocks/hasPackage').then(r=>r.json()),
+            fetch('/api/packages').then(r=>r.json())
+        ]);
 
-    function refreshDashboard() {
         document.getElementById('stat-zones').textContent = zones.length;
         document.getElementById('stat-shelves').textContent = shelves.length;
         document.getElementById('stat-blocks').textContent = blocks.length;
-        document.getElementById('stat-blocks-empty').textContent = blocks.filter(b => !b.full).length;
+        document.getElementById('stat-blocks-occup').textContent = blocksOcc.length;
+        document.getElementById('stat-pkgs').textContent = pkgs.length;
 
-        document.getElementById('stat-packages').textContent = packages.length;
-        document.getElementById('stat-imported').textContent = packages.filter(p=>p.status==='IMPORTED').length;
-        document.getElementById('stat-onshelf').textContent = packages.filter(p=>p.status==='ON_SHELF').length;
-        document.getElementById('stat-exported').textContent = packages.filter(p=>p.status==='EXPORTED').length;
+        const i=pkgs.filter(p=>p.status==='IMPORTED').length,
+            o=pkgs.filter(p=>p.status==='ON_SHELF').length,
+            e=pkgs.filter(p=>p.status==='EXPORTED').length;
 
-        const rt = document.getElementById('recentTable');
-        rt.innerHTML = '';
-        packages.forEach(p => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${p.id}</td><td>${p.rfid}</td><td>${p.beacon}</td><td>${p.status}</td><td>${p.time_in}</td>`;
-            rt.appendChild(tr);
+        document.getElementById('stat-imported').textContent = i;
+        document.getElementById('stat-onshelf').textContent = o;
+        document.getElementById('stat-exported').textContent = e;
+
+        renderRecent(pkgs);
+        renderChart([i,o,e]);
+        renderHeatmap(blocks, blocksOcc);
+        renderAlert(pkgs, blocksOcc.length, blocks.length);
+    }
+
+    function renderRecent(pkgs){
+        const t = pkgs.sort((a,b)=>new Date(b.time_in)-new Date(a.time_in)).slice(0,5);
+        const tb = document.getElementById('recentTable');
+        tb.innerHTML = '';
+        t.forEach(p=>{
+            const tr=document.createElement('tr');
+            tr.innerHTML=`<td>${p.id}</td><td>${p.rfid}</td><td>${p.beacon_name||''}</td><td>${p.status}</td><td>${new Date(p.time_in).toLocaleString()}</td>`;
+            tb.appendChild(tr);
         });
     }
 
-    refreshDashboard();
+    let pkgChart;
+    function renderChart(pkgData){
+        if(pkgChart) pkgChart.destroy();
+        pkgChart = new Chart(document.getElementById('pkgChart'), {
+            type:'doughnut',
+            data: {
+                labels:['Imported','On Shelf','Exported'],
+                datasets:[{data:pkgData, backgroundColor:['#f0ad4e','#5cb85c','#5bc0de']}]
+            }
+        });
+    }
+
+    function renderHeatmap(blocks, occ){
+        const el = document.getElementById('blockHeatmap');
+        el.innerHTML = '';
+        const occIds = new Set(occ.map(b => b.id));
+        blocks.forEach(b=>{
+            const div = document.createElement('div');
+            div.className = occIds.has(b.id) ? 'h-4' : 'h-0';
+            el.appendChild(div);
+        });
+    }
+
+    function renderAlert(pkgs, occCount, total){
+        const badge = document.getElementById('delayAlert');
+        const stuck = pkgs.some(p=>p.status==='ON_SHELF' && Date.now() - new Date(p.time_in) > 86400000);
+        const full = occCount / total > 0.9;
+        badge.textContent = stuck ? '⚠️ Gói tồn quá lâu!' : full ? '⚠️ Block sắp đầy!' : '';
+        badge.className = `alert-badge ${stuck ? 'bg-danger' : 'bg-warning'} ${!(stuck || full) ? 'd-none' : ''}`;
+    }
+
+    refresh(); setInterval(refresh, 30000);
 </script>
 </body>
 </html>

@@ -8,70 +8,27 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
   <style>
     body { background: #f5f7fa; font-family: 'Segoe UI', sans-serif; margin: 0; }
-    .sidebar {
-      background-color: #2c3e50; padding: 1rem 0.5rem; position: fixed; top: 0; left: 0;
-      width: fit-content; height: 100vh; overflow-y: auto; z-index: 1000;
-      display: flex; flex-direction: column; gap: 0.25rem;
-    }
-    .sidebar .nav-title {
-      color: #bdc3c7; font-size: .85rem; text-transform: uppercase;
-      padding: 0 1rem; white-space: nowrap;
-    }
-    .sidebar .nav-link {
-      color: #ecf0f1; padding: 10px 16px; border-radius: 5px;
-      display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;
-    }
-    .sidebar .nav-link:hover,
-    .sidebar .nav-link.active {
-      background-color: #34495e;
-      border-left: 4px solid #6c75f0;
-      color: #ffffff;
-    }
-    .sidebar .menu-text { display: inline; }
-    .main-content {
-      padding: 1.5rem;
-      transition: margin-left 0.3s;
-    }
+    .sidebar { background-color: #2c3e50; padding: 1rem 0.5rem; position: fixed; top: 0; left: 0; width: fit-content; height: 100vh; overflow-y: auto; z-index: 1000; display: flex; flex-direction: column; gap: 0.25rem; }
+    .sidebar .nav-title { color: #bdc3c7; font-size: .85rem; text-transform: uppercase; padding: 0 1rem; white-space: nowrap; }
+    .sidebar .nav-link { color: #ecf0f1; padding: 10px 16px; border-radius: 5px; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #34495e; border-left: 4px solid #6c75f0; color: #ffffff; }
+    .main-content { padding: 1.5rem; transition: margin-left 0.3s; }
     @media (max-width: 991.98px) {
-      .sidebar {
-        position: relative; width: 100%; height: auto;
-        flex-direction: row; overflow-x: auto;
-      }
+      .sidebar { position: relative; width: 100%; height: auto; flex-direction: row; overflow-x: auto; }
       .main-content { margin-left: 0 !important; padding-top: 1rem; }
       .sidebar .nav-title { display: none; }
     }
-    .stats-box .card {
-      border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-    }
+    .stats-box .card { border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
     .stats-box .card h5 { font-size: 1rem; color: #444; }
     .stats-box .card h4 { font-size: 1.4rem; font-weight: bold; }
     .table-container { overflow-x: auto; }
-    table {
-      width: 100%; border-collapse: separate; border-spacing: 0 1rem;
-    }
-    table thead {
-      background: #6c75f0; color: white;
-    }
-    table thead th {
-      cursor: pointer; text-align: left; padding: .75rem;
-    }
-    table tbody tr {
-      background: #fff; border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      transition: box-shadow .2s;
-    }
-    table tbody tr:hover {
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    }
-    table td {
-      padding: .75rem; vertical-align: middle; background: #fff;
-    }
-    .status-label {
-      display: inline-flex; align-items: center; gap: .3rem;
-      padding: .3rem .8rem; border-radius: 999px;
-      font-size: .85rem; font-weight: 500; text-transform: capitalize;
-    }
+    table { width: 100%; border-collapse: separate; border-spacing: 0 1rem; }
+    table thead { background: #6c75f0; color: white; }
+    table thead th { cursor: pointer; text-align: left; padding: .75rem; }
+    table tbody tr { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: box-shadow .2s; }
+    table tbody tr:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    table td { padding: .75rem; vertical-align: middle; background: #fff; }
+    .status-label { display: inline-flex; align-items: center; gap: .3rem; padding: .3rem .8rem; border-radius: 999px; font-size: .85rem; font-weight: 500; text-transform: capitalize; }
     .status-imported { background: #fff3cd; color: #856404; }
     .status-on_shelf { background: #d3f9d8; color: #2b8a3e; }
     .status-exported { background: #d0ebff; color: #1c7ed6; }
@@ -133,47 +90,70 @@
     </table>
   </div>
 </div>
-
-<div class="modal fade" id="detailModal" tabindex="-1">
-  <div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header"><h5>Package Details</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body" id="detailBody"></div>
-    <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
-  </div></div>
+<!-- Modal for PO ID and Product ID -->
+<div class="modal fade" id="packageFormModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="packageModalForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Nhập PO ID và Product ID</h5>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="rfidField">
+          <input type="hidden" id="beaconField">
+          <div class="mb-3">
+            <label for="poId">PO ID</label>
+            <input type="text" class="form-control" id="poId" required>
+          </div>
+          <div class="mb-3">
+            <label for="productId">Product ID</label>
+            <input type="text" class="form-control" id="productId" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lưu Package</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
+<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h5>Package Details</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="detailBody"></div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
   const apiBase = '/api/packages';
   let allData = [];
   let currentSort = { col: null, asc: true };
 
   async function initApp() {
-    try {
-      const [sb, pkgs] = await Promise.all([
-        fetch('/sidebar').then(r => r.text()),
-        fetch(apiBase).then(r => r.json())
-      ]);
-
-      document.getElementById('sidebar-container').innerHTML = sb;
-      allData = pkgs;
-
-      updateMainMargin();
-      updateStats();
-      renderTable(allData);
-    } catch (err) {
-      console.error('Load error:', err);
-    }
+    const [sb, pkgs] = await Promise.all([
+      fetch('/sidebar').then(r => r.text()),
+      fetch(apiBase).then(r => r.json())
+    ]);
+    document.getElementById('sidebar-container').innerHTML = sb;
+    allData = pkgs;
+    updateMainMargin();
+    updateStats();
+    renderTable(allData);
   }
 
   function updateMainMargin() {
     const sb = document.querySelector('.sidebar');
     const main = document.querySelector('.main-content');
-    if (window.innerWidth >= 992 && sb) {
-      main.style.marginLeft = sb.offsetWidth + 'px';
-    } else {
-      main.style.marginLeft = '0';
-    }
+    main.style.marginLeft = (sb && window.innerWidth >= 992) ? sb.offsetWidth + 'px' : '0';
   }
 
   function updateStats() {
@@ -188,40 +168,137 @@
   function renderTable(data) {
     const tb = document.getElementById('packageTableBody');
     tb.innerHTML = '';
-
     data.forEach(pkg => {
       const st = pkg.status || '';
       const cls = st.toLowerCase().replace(/\s/g, '_');
       const icon = st === 'IMPORTED' ? '📥' : st === 'ON_SHELF' ? '📦' : st === 'EXPORTED' ? '🚚' : '';
       const tr = document.createElement('tr');
-
       tr.innerHTML = `
-          <td>${pkg.id||''}</td>
-          <td>${pkg.poId||''}</td>
-          <td>${pkg.productId||''}</td>
-          <td>${pkg.rfid||''}</td>
-          <td>${pkg.beacon_name||''}</td>
-          <td>${pkg.zone||''}</td>
-          <td>${pkg.block||''}</td>
-          <td>${pkg.time_in||''}</td>
-          <td>${pkg.time_out||''}</td>
-          <td><span class="badge status-label status-${cls}">${icon} ${st}</span></td>
-          <td>
-            <button class="btn btn-info btn-sm me-1" onclick="showDetail('${pkg.id}')"><i class="bi bi-eye"></i></button>
-            <button class="btn btn-warning btn-sm me-1" onclick="editPkg('${pkg.id}')"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-danger btn-sm" onclick="deletePkg('${pkg.id}')"><i class="bi bi-trash"></i></button>
-          </td>
-        `;
+        <td>${pkg.id || ''}</td>
+        <td>${pkg.poId || ''}</td>
+        <td>${pkg.productId || ''}</td>
+        <td>${pkg.rfid || ''}</td>
+        <td>${pkg.beacon_name || ''}</td>
+        <td>${pkg.zone || ''}</td>
+        <td>${pkg.block || ''}</td>
+        <td>${pkg.time_in || ''}</td>
+        <td>${pkg.time_out || ''}</td>
+        <td><span class="badge status-label status-${cls}">${icon} ${st}</span></td>
+        <td>
+          <button class="btn btn-info btn-sm me-1" onclick="showDetail('${pkg.id}')"><i class="bi bi-eye"></i></button>
+          <button class="btn btn-warning btn-sm me-1" onclick="editPkg('${pkg.id}')"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="deletePkg('${pkg.id}')"><i class="bi bi-trash"></i></button>
+        </td>
+      `;
       tb.appendChild(tr);
     });
   }
 
-  document.querySelector('#packageForm').addEventListener('submit', async e => {
+  function sortBy(col) {
+    currentSort.asc = currentSort.col === col ? !currentSort.asc : true;
+    currentSort.col = col;
+    const sorted = [...allData].sort((a, b) => {
+      const v1 = a[col] || '';
+      const v2 = b[col] || '';
+      return currentSort.asc ? v1.localeCompare(v2) : v2.localeCompare(v1);
+    });
+    renderTable(sorted);
+  }
+
+  function showDetail(id) {
+    const pkg = allData.find(p => p.id === id);
+    if (!pkg) return;
+
+    const get = v => (v && v.trim() !== '') ? v : '';
+
+    const detail = `
+    <ul class="list-group">
+      <li class="list-group-item"><strong>PO ID:</strong> ${get(pkg.poId)}</li>
+      <li class="list-group-item"><strong>Product ID:</strong> ${get(pkg.productId)}</li>
+      <li class="list-group-item"><strong>RFID:</strong> ${get(pkg.rfid)}</li>
+      <li class="list-group-item"><strong>Beacon:</strong> ${get(pkg.beacon_name)}</li>
+      <li class="list-group-item"><strong>Zone:</strong> ${get(pkg.zone)}</li>
+      <li class="list-group-item"><strong>Block:</strong> ${get(pkg.block)}</li>
+      <li class="list-group-item"><strong>Time In:</strong> ${get(pkg.time_in)}</li>
+      <li class="list-group-item"><strong>Time Out:</strong> ${get(pkg.time_out)}</li>
+      <li class="list-group-item"><strong>Status:</strong> ${get(pkg.status)}</li>
+    </ul>
+  `;
+    document.getElementById('detailBody').innerHTML = detail;
+    new bootstrap.Modal(document.getElementById('detailModal')).show();
+  }
+
+
+  function editPkg(id) {
+    const pkg = allData.find(p => p.id === id);
+    if (!pkg) return;
+    document.getElementById('poId').value = pkg.poId;
+    document.getElementById('productId').value = pkg.productId;
+    document.getElementById('rfidField').value = pkg.rfid;
+    document.getElementById('beaconField').value = pkg.beacon_name;
+    new bootstrap.Modal(document.getElementById('packageFormModal')).show();
+  }
+
+  async function deletePkg(id) {
+    if (!confirm(`Bạn có chắc muốn xoá package ID = ${id}?`)) return;
+    await fetch(`/api/packages/${id}`, { method: 'DELETE' });
+    alert("🗑️ Đã xoá thành công");
+    initApp();
+  }
+
+  let stompClient = null;
+  function connectWebSocket() {
+    const socket = new SockJS('/ws-package');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, () => {
+      console.log("📡 Connected to WebSocket");
+      stompClient.subscribe('/topic/package-init', message => {
+        const pkg = JSON.parse(message.body);
+        showPackageForm(pkg.rfid, pkg.beacon_name);
+      });
+    });
+  }
+
+  function showPackageForm(rfid, beaconName) {
+    document.getElementById('rfidField').value = rfid;
+    document.getElementById('beaconField').value = beaconName;
+    const modal = new bootstrap.Modal(document.getElementById('packageFormModal'));
+    modal.show();
+  }
+
+  document.getElementById('packageModalForm').addEventListener('submit', function (e) {
     e.preventDefault();
-    // Bạn có thể thêm logic submit tương tự như ban đầu...
+    const data = {
+      rfid: document.getElementById('rfidField').value,
+      beacon_name: document.getElementById('beaconField').value,
+      poId: document.getElementById('poId').value,
+      productId: document.getElementById('productId').value
+    };
+    fetch('/api/packages/finalize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+            .then(res => {
+              if (!res.ok) throw new Error("Lưu thất bại");
+              return res.json();
+            })
+            .then(() => {
+              alert("✅ Package saved!");
+              location.reload();
+            })
+            .catch(err => alert(err.message));
   });
 
-  window.addEventListener('DOMContentLoaded', initApp);
+  document.querySelectorAll('th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => sortBy(th.dataset.sort));
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    initApp();
+    connectWebSocket();
+  });
+
   window.addEventListener('resize', updateMainMargin);
 </script>
 </body>

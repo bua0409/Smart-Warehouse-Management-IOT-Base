@@ -13,7 +13,7 @@ public class ViewController {
 
     @GetMapping("/zones")
     public String showZonesPage() {
-        return "zone"; // Tương ứng với templates/zone.html
+        return "zone";
     }
 
     @GetMapping("/packages")
@@ -31,12 +31,21 @@ public class ViewController {
         return "dashboard";
     }
 
-    @GetMapping("shelf")
+    @GetMapping("/shelf")
     public String showShelfPage() {
         return "shelf";
     }
+
+    @GetMapping("/block")
+    public String showBlockPage() {
+        return "block";
+    }
+
     @GetMapping("/popup")
     public String showPopupPage() {
-        return "popup-package"; // KHÔNG cần .html
+        return "popup-package";
     }
+
+    @GetMapping("/order")
+    public String showOrderPage(){ return "order";}
 }

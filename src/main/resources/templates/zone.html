@@ -9,51 +9,11 @@
   <style>
     body { background: #f5f7fa; font-family: 'Segoe UI', sans-serif; margin: 0; }
 
-    .sidebar {
-      background-color: #2c3e50;
-      padding: 1rem 0.5rem;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 220px;
-      height: 100vh;
-      overflow-y: auto;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .sidebar .nav-title {
-      color: #bdc3c7;
-      font-size: .85rem;
-      text-transform: uppercase;
-      padding: 0 1rem;
-      white-space: nowrap;
-    }
-
-    .sidebar .nav-link {
-      color: #ecf0f1;
-      padding: 10px 16px;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      white-space: nowrap;
-    }
-
-    .sidebar .nav-link:hover,
-    .sidebar .nav-link.active {
-      background-color: #34495e;
-      border-left: 4px solid #6c75f0;
-      color: #ffffff;
-    }
-
-    .main-content {
-      margin-left: 220px;
-      padding: 1.5rem;
-      transition: margin-left 0.3s;
-    }
+    .sidebar { background-color: #2c3e50; padding: 1rem 0.5rem; position: fixed; top: 0; left: 0; width: fit-content; height: 100vh; overflow-y: auto; z-index: 1000; display: flex; flex-direction: column; gap: 0.25rem; }
+    .sidebar .nav-title { color: #bdc3c7; font-size: .85rem; text-transform: uppercase; padding: 0 1rem; white-space: nowrap; }
+    .sidebar .nav-link { color: #ecf0f1; padding: 10px 16px; border-radius: 5px; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #34495e; border-left: 4px solid #6c75f0; color: #ffffff; }
+    .main-content { padding: 1.5rem; transition: margin-left 0.3s; }
 
     @media (max-width: 991.98px) {
       .sidebar {
@@ -99,7 +59,7 @@
 <div id="sidebar-container" class="sidebar"></div>
 
 <div class="main-content">
-  <h1 class="mb-4 fw-bold">🏷️ Zone Management</h1>
+  <h1 class="stats-box mb-4 d-flex flex-wrap gap-3">🏷️ Zone Management</h1>
 
   <!-- Stats -->
   <div class="stats-box mb-4 d-flex flex-wrap gap-3">

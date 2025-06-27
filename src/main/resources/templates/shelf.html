@@ -8,14 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
     <style>
         body { background: #f5f7fa; font-family: 'Segoe UI', sans-serif; margin: 0; }
-
         .sidebar {
             background-color: #2c3e50;
             padding: 1rem 0.5rem;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 220px;
+            top: 0; left: 0;
+            width: fit-content;
             height: 100vh;
             overflow-y: auto;
             z-index: 1000;
@@ -23,25 +21,17 @@
             flex-direction: column;
             gap: 0.25rem;
         }
-
         .sidebar .nav-title {
-            color: #bdc3c7;
-            font-size: .85rem;
+            color: #bdc3c7; font-size: .85rem;
             text-transform: uppercase;
-            padding: 0 1rem;
-            white-space: nowrap;
+            padding: 0 1rem; white-space: nowrap;
         }
-
         .sidebar .nav-link {
-            color: #ecf0f1;
-            padding: 10px 16px;
+            color: #ecf0f1; padding: 10px 16px;
             border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            display: flex; align-items: center; gap: 0.5rem;
             white-space: nowrap;
         }
-
         .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
             background-color: #34495e;
@@ -50,7 +40,6 @@
         }
 
         .main-content {
-            margin-left: 220px;
             padding: 1.5rem;
             transition: margin-left 0.3s;
         }
@@ -58,17 +47,15 @@
         @media (max-width: 991.98px) {
             .sidebar {
                 position: relative;
-                width: 100% !important;
+                width: 100%!important;
                 height: auto;
                 flex-direction: row;
                 overflow-x: auto;
             }
-
             .main-content {
-                margin-left: 0 !important;
+                margin-left: 0!important;
                 padding-top: 1rem;
             }
-
             .sidebar .nav-title { display: none; }
         }
 
@@ -76,21 +63,25 @@
             border-radius: 16px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.05);
         }
-
         .stats-box .card h5 { font-size: 1rem; color: #444; }
         .stats-box .card h4 { font-size: 1.4rem; font-weight: bold; }
 
-        .shelf-row {
+        .table-header, .shelf-row {
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            transition: box-shadow .2s;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             padding: 1rem;
+            transition: box-shadow .2s;
         }
-
         .shelf-row:hover {
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        .badge-block {
+            margin: 0 4px 4px 0;
+            padding: 0.45em 0.75em;
+            font-size: .85rem;
         }
     </style>
 </head>
@@ -99,16 +90,14 @@
 <div id="sidebar-container" class="sidebar"></div>
 
 <div class="main-content">
-    <h1 class="mb-4 fw-bold">🏷️ Shelf Management</h1>
+    <h2 class="fw-bold mb-4">📚 Shelf Management</h2>
 
-    <!-- Stats -->
     <div class="stats-box mb-4 d-flex flex-wrap gap-3">
         <div class="card flex-fill text-center p-3 bg-light border-0" style="max-width: 35%;">
             <h5>Total Shelves</h5><h4 id="stat-total">0</h4>
         </div>
     </div>
 
-    <!-- Shelf Form -->
     <div class="card p-4 mb-4">
         <form id="shelfForm" class="row g-3 align-items-end">
             <div class="col-md-3">
@@ -117,56 +106,61 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Zone ID</label>
-                <input type="text" class="form-control" id="zoneIdInput" placeholder="Comma-separated" />
+                <input type="text" class="form-control" id="zoneIdInput" placeholder="Zone ID" />
             </div>
             <div class="col-md-4">
                 <label class="form-label">Block IDs</label>
                 <input type="text" class="form-control" id="blockIdListInput" placeholder="Comma-separated" />
             </div>
-            <div class="col-md-2 d-grid">
-                <button type="submit" class="btn btn-success">💾 Save</button>
+            <div class="col-md-1 d-grid">
+                <button type="submit" class="btn btn-success">💾</button>
             </div>
         </form>
     </div>
 
-    <!-- Header Row -->
-    <div class="zone-row row fw-bold text-muted mb-2" style="background: transparent; box-shadow: none;">
+    <div class="table-header row fw-bold text-muted">
         <div class="col-md-3">ID</div>
         <div class="col-md-3">Zone Id</div>
         <div class="col-md-4">Block IDs</div>
         <div class="col-md-2 text-end">Actions</div>
     </div>
 
-    <!-- Shelf List -->
     <div id="shelfListContainer"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const shelfApi = '/api/Shelf';
-    let shelves = [];
+    let shelves = [], allBlocks = [];
 
-    // Sidebar + margin sync
     function updateMainMargin() {
         const sidebar = document.querySelector('.sidebar');
         const main = document.querySelector('.main-content');
-        if (window.innerWidth >= 992 && sidebar && main) {
-            main.style.marginLeft = sidebar.offsetWidth + 'px';
-        } else {
-            main.style.marginLeft = '0';
-        }
+        if (!sidebar || !main) return;
+        main.style.marginLeft = (window.innerWidth >= 992) ? sidebar.offsetWidth + 'px' : '0';
     }
 
     fetch('/sidebar')
         .then(res => res.text())
         .then(html => {
             document.getElementById('sidebar-container').innerHTML = html;
-            updateMainMargin();
+            requestAnimationFrame(() => {
+                updateMainMargin();
+                const sidebar = document.querySelector('#sidebar-container .sidebar');
+                if (sidebar) {
+                    new MutationObserver(updateMainMargin)
+                        .observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+                }
+            });
         });
 
     async function refresh() {
-        const res = await fetch(shelfApi);
-        shelves = await res.json();
+        const [shelfRes, blockRes] = await Promise.all([
+            fetch(shelfApi),
+            fetch('/api/Blocks')
+        ]);
+        shelves = await shelfRes.json();
+        allBlocks = await blockRes.json();
         document.getElementById('stat-total').textContent = shelves.length;
         renderShelfRows();
     }
@@ -174,28 +168,33 @@
     function renderShelfRows() {
         const container = document.getElementById('shelfListContainer');
         container.innerHTML = '';
-        shelves.forEach(z => {
+        shelves.forEach(shelf => {
             const row = document.createElement('div');
-            row.className = 'zone-row row align-items-center';
+            row.className = 'shelf-row row align-items-center';
+            const blockBadges = (shelf.blockIdList || []).map(id => {
+                const blk = allBlocks.find(b => b.id === id);
+                const cls = blk && blk.hasPackage ? 'bg-danger-subtle text-danger border-danger' : 'bg-light text-dark border';
+                return `<span class="badge ${cls} badge-block">${id}</span>`;
+            }).join('');
             row.innerHTML = `
-        <div class="col-md-3"><strong>${z.id}</strong></div>
-        <div class="col-md-3">${z.zoneId}</div>
-        <div class="col-md-4">${(z.blockIdList || []).join(', ')}</div>
+        <div class="col-md-3"><strong>${shelf.id}</strong></div>
+        <div class="col-md-3">${shelf.zoneId || 'Unknown'}</div>
+        <div class="col-md-4">${blockBadges || '<span class="text-muted">None</span>'}</div>
         <div class="col-md-2 text-end">
-          <button class="btn btn-warning btn-sm me-1" onclick='editZone(${JSON.stringify(z)})'><i class="bi bi-pencil"></i></button>
-          <button class="btn btn-danger btn-sm" onclick='deleteZone("${z.id}")'><i class="bi bi-trash"></i></button>
+          <button class="btn btn-warning btn-sm me-1" onclick='editShelf(${JSON.stringify(shelf)})'><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-danger btn-sm" onclick='deleteShelf("${shelf.id}")'><i class="bi bi-trash"></i></button>
         </div>`;
             container.appendChild(row);
         });
     }
 
-    function editZone(shelf){
+    function editShelf(shelf) {
         document.getElementById('shelfIdInput').value = shelf.id;
         document.getElementById('zoneIdInput').value = shelf.zoneId;
         document.getElementById('blockIdListInput').value = (shelf.blockIdList || []).join(', ');
     }
 
-    async function deleteShelf(id){
+    async function deleteShelf(id) {
         if (!confirm('Delete this shelf?')) return;
         await fetch(`${shelfApi}/${id}`, { method: 'DELETE' });
         await refresh();
@@ -217,13 +216,12 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
-        document.getElementById('zoneForm').reset();
+        document.getElementById('shelfForm').reset();
         await refresh();
     });
 
     window.addEventListener('resize', updateMainMargin);
     window.addEventListener('DOMContentLoaded', refresh);
 </script>
-
 </body>
 </html>
