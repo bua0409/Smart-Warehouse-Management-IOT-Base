@@ -41,11 +41,6 @@ public class ViewController {
         return "block";
     }
 
-    @GetMapping("/popup")
-    public String showPopupPage() {
-        return "popup-package";
-    }
-
     @GetMapping("/order")
     public String showOrderPage(){ return "order";}
 }

@@ -1,5 +1,7 @@
 package datn.springboot.entity;
 
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +25,8 @@ public class Package {
     private String block;
     private String time_in;
     private String time_out;
+
+    @Enumerated(EnumType.STRING)
     private PackageStatus status = PackageStatus.IMPORTED; // Mặc định là 'Nhập Kho'
 
 
