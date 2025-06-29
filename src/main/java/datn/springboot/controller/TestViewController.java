@@ -8,6 +8,6 @@ public class TestViewController {
 
     @GetMapping("/test")
     public String test() {
-        return "package"; // kiểm tra load file package.html
+        return "mypackage"; // kiểm tra load file package.html
     }
 }
