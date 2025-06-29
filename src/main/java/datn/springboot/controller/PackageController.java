@@ -158,13 +158,18 @@
         public ResponseEntity<?> getAllPackages() {
             try {
                 List<Package> packages = packageRepository.findAll();
+
+                for (Package pkg : packages) {
+                    System.out.println("✅ package: " + pkg.getRfid() + " | status=" + pkg.getStatus());
+                }
+
                 return ResponseEntity.ok(packages);
             } catch (Exception e) {
-                e.printStackTrace(); // In log lỗi ra Heroku
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Failed to fetch packages: " + e.getMessage());
+                e.printStackTrace(); // Sẽ in lỗi cụ thể lên Heroku logs
+                return ResponseEntity.status(500).body("❌ ERROR: " + e.getMessage());
             }
         }
+
 
 
         @GetMapping("/{id}")

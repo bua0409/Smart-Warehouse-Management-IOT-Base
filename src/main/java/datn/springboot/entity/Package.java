@@ -26,7 +26,7 @@ public class Package {
     private String time_in;
     private String time_out;
 
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
     private PackageStatus status = PackageStatus.IMPORTED; // Mặc định là 'Nhập Kho'
 
 
