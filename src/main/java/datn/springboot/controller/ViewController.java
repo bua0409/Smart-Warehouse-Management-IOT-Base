@@ -16,7 +16,7 @@ public class ViewController {
         return "zone";
     }
 
-    @GetMapping("/packages")
+    @GetMapping("/mypackages")
     public String showPackagesPage() {
         System.out.println("✅ Đã vào được /packages");
         return "mypackage";
