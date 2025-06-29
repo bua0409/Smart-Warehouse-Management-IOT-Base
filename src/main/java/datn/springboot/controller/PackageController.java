@@ -155,9 +155,17 @@
         }
 
         @GetMapping
-        public ResponseEntity<List<Package>> getAllPackages() {
-            return ResponseEntity.ok(packageRepository.findAll());
+        public ResponseEntity<?> getAllPackages() {
+            try {
+                List<Package> packages = packageRepository.findAll();
+                return ResponseEntity.ok(packages);
+            } catch (Exception e) {
+                e.printStackTrace(); // In log lỗi ra Heroku
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Failed to fetch packages: " + e.getMessage());
+            }
         }
+
 
         @GetMapping("/{id}")
         public ResponseEntity<Package> getPackageById(@PathVariable String id) {
