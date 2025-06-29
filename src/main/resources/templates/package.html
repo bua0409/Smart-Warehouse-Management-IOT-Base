@@ -139,16 +139,28 @@
   let currentSort = { col: null, asc: true };
 
   async function initApp() {
-    const [sb, pkgs] = await Promise.all([
-      fetch('/sidebar').then(r => r.text()),
-      fetch(apiBase).then(r => r.json())
-    ]);
-    document.getElementById('sidebar-container').innerHTML = sb;
-    allData = pkgs;
-    updateMainMargin();
-    updateStats();
-    renderTable(allData);
+    try {
+      const [sb, pkgs] = await Promise.all([
+        fetch('/sidebar').then(r => {
+          if (!r.ok) throw new Error("❌ sidebar load failed");
+          return r.text();
+        }),
+        fetch(apiBase).then(r => {
+          if (!r.ok) throw new Error("❌ api/packages load failed");
+          return r.json();
+        })
+      ]);
+      document.getElementById('sidebar-container').innerHTML = sb;
+      allData = pkgs;
+      updateMainMargin();
+      updateStats();
+      renderTable(allData);
+    } catch (err) {
+      console.error("🚨 initApp error:", err);
+      alert("Lỗi khi khởi tạo: " + err.message);
+    }
   }
+
 
   function updateMainMargin() {
     const sb = document.querySelector('.sidebar');
