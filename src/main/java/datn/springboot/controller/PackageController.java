@@ -157,16 +157,10 @@
         @GetMapping
         public ResponseEntity<?> getAllPackages() {
             try {
-                List<Package> packages = packageRepository.findAll();
-
-                for (Package pkg : packages) {
-                    System.out.println("✅ package: " + pkg.getRfid() + " | status=" + pkg.getStatus());
-                }
-
-                return ResponseEntity.ok(packages);
+                return ResponseEntity.ok(packageRepository.findAll());
             } catch (Exception e) {
-                e.printStackTrace(); // Sẽ in lỗi cụ thể lên Heroku logs
-                return ResponseEntity.status(500).body("❌ ERROR: " + e.getMessage());
+                e.printStackTrace();  // In log Heroku sẽ thấy nguyên nhân thật
+                return ResponseEntity.status(500).body("Lỗi khi đọc package: " + e.getMessage());
             }
         }
 
