@@ -16,7 +16,7 @@ public class ViewController {
         return "zone";
     }
 
-    @GetMapping("/packages")
+    @GetMapping("view/packages")
     public String showPackagesPage() {
         return "package";
     }
