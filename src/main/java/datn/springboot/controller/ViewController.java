@@ -18,6 +18,7 @@ public class ViewController {
 
     @GetMapping("view/packages")
     public String showPackagesPage() {
+        System.out.println("✅ Đã vào được /packages");
         return "package";
     }
 
