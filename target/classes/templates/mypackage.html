@@ -1,329 +1,329 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--  <meta charset="UTF-8"/>-->
-<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>-->
-<!--  <title>Smart Warehouse</title>-->
-<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>-->
-<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>-->
-<!--  <style>-->
-<!--    body { background: #f5f7fa; font-family: 'Segoe UI', sans-serif; margin: 0; }-->
-<!--    .sidebar { background-color: #2c3e50; padding: 1rem 0.5rem; position: fixed; top: 0; left: 0; width: fit-content; height: 100vh; overflow-y: auto; z-index: 1000; display: flex; flex-direction: column; gap: 0.25rem; }-->
-<!--    .sidebar .nav-title { color: #bdc3c7; font-size: .85rem; text-transform: uppercase; padding: 0 1rem; white-space: nowrap; }-->
-<!--    .sidebar .nav-link { color: #ecf0f1; padding: 10px 16px; border-radius: 5px; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }-->
-<!--    .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #34495e; border-left: 4px solid #6c75f0; color: #ffffff; }-->
-<!--    .main-content { padding: 1.5rem; transition: margin-left 0.3s; }-->
-<!--    @media (max-width: 991.98px) {-->
-<!--      .sidebar { position: relative; width: 100%; height: auto; flex-direction: row; overflow-x: auto; }-->
-<!--      .main-content { margin-left: 0 !important; padding-top: 1rem; }-->
-<!--      .sidebar .nav-title { display: none; }-->
-<!--    }-->
-<!--    .stats-box .card { border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }-->
-<!--    .stats-box .card h5 { font-size: 1rem; color: #444; }-->
-<!--    .stats-box .card h4 { font-size: 1.4rem; font-weight: bold; }-->
-<!--    .table-container { overflow-x: auto; }-->
-<!--    table { width: 100%; border-collapse: separate; border-spacing: 0 1rem; }-->
-<!--    table thead { background: #6c75f0; color: white; }-->
-<!--    table thead th { cursor: pointer; text-align: left; padding: .75rem; }-->
-<!--    table tbody tr { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: box-shadow .2s; }-->
-<!--    table tbody tr:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }-->
-<!--    table td { padding: .75rem; vertical-align: middle; background: #fff; }-->
-<!--    .status-label { display: inline-flex; align-items: center; gap: .3rem; padding: .3rem .8rem; border-radius: 999px; font-size: .85rem; font-weight: 500; text-transform: capitalize; }-->
-<!--    .status-imported { background: #fff3cd; color: #856404; }-->
-<!--    .status-on_shelf { background: #d3f9d8; color: #2b8a3e; }-->
-<!--    .status-exported { background: #d0ebff; color: #1c7ed6; }-->
-<!--    .filter-select { max-width: 200px; margin-bottom: 1rem; }-->
-<!--  </style>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<div id="sidebar-container"></div>-->
-
-<!--<div class="main-content">-->
-<!--  <div class="stats-box mb-4 d-flex flex-wrap gap-3">-->
-<!--    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>Total Packages</h5><h4 id="stat-total">0</h4></div>-->
-<!--    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>📥 IMPORTED</h5><h4 id="stat-imported">0</h4></div>-->
-<!--    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>📦 ON SHELF</h5><h4 id="stat-onshelf">0</h4></div>-->
-<!--    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>🚚 EXPORTED</h5><h4 id="stat-exported">0</h4></div>-->
-<!--    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>🌡️ Temp</h5><h4 id="stat-temp">&#45;&#45; °C</h4></div>-->
-<!--    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>💧 Humidity</h5><h4 id="stat-humidity">&#45;&#45; %</h4></div>-->
-<!--  </div>-->
-
-<!--  <div class="card p-4 mb-4">-->
-<!--    <h2 class="text-center mb-4">📋 Package Form</h2>-->
-<!--    <form id="packageForm" class="row g-3">-->
-<!--      <input type="hidden" id="rfidInput"/>-->
-<!--      <div class="col-md-2"><input type="text" class="form-control" id="beaconNameInput" placeholder="Beacon Name" required/></div>-->
-<!--      <div class="col-md-2"><input type="text" class="form-control" id="zoneInput" placeholder="Zone" required/></div>-->
-<!--      <div class="col-md-2"><input type="text" class="form-control" id="blockInput" placeholder="Block" required/></div>-->
-<!--      <div class="col-md-3"><input type="datetime-local" class="form-control" id="timeInInput" required/></div>-->
-<!--      <div class="col-md-2"><input type="datetime-local" class="form-control" id="timeOutInput"/></div>-->
-<!--      <div class="col-md-1 d-grid"><button type="submit" class="btn btn-primary">💾</button></div>-->
-<!--    </form>-->
-<!--  </div>-->
-
-<!--  <select id="filterStatus" class="form-select filter-select mb-3">-->
-<!--    <option value="">All statuses</option>-->
-<!--    <option value="IMPORTED">IMPORTED</option>-->
-<!--    <option value="ON_SHELF">ON_SHELF</option>-->
-<!--    <option value="EXPORTED">EXPORTED</option>-->
-<!--  </select>-->
-
-<!--  <div class="table-container">-->
-<!--    <table class="table align-middle">-->
-<!--      <thead>-->
-<!--      <tr>-->
-<!--        <th data-sort="id">ID ⇅</th>-->
-<!--        <th data-sort="poId">PO ID</th>-->
-<!--        <th data-sort="productId">Product ID</th>-->
-<!--        <th>RFID</th>-->
-<!--        <th>Beacon</th>-->
-<!--        <th>Zone</th>-->
-<!--        <th>Block</th>-->
-<!--        <th data-sort="time_in">Time In ⇅</th>-->
-<!--        <th data-sort="time_out">Time Out ⇅</th>-->
-<!--        <th>Status</th>-->
-<!--        <th>Actions</th>-->
-<!--      </tr>-->
-<!--      </thead>-->
-<!--      <tbody id="packageTableBody"></tbody>-->
-<!--    </table>-->
-<!--  </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Modal for PO ID and Product ID &ndash;&gt;-->
-<!--<div class="modal fade" id="packageFormModal" tabindex="-1" aria-hidden="true">-->
-<!--  <div class="modal-dialog">-->
-<!--    <div class="modal-content">-->
-<!--      <form id="packageModalForm">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title">Nhập PO ID và Product ID</h5>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <input type="hidden" id="rfidField">-->
-<!--          <input type="hidden" id="beaconField">-->
-<!--          <div class="mb-3">-->
-<!--            <label for="poId">PO ID</label>-->
-<!--            <input type="text" class="form-control" id="poId" required>-->
-<!--          </div>-->
-<!--          <div class="mb-3">-->
-<!--            <label for="productId">Product ID</label>-->
-<!--            <input type="text" class="form-control" id="productId" required>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="modal-footer">-->
-<!--          <button type="submit" class="btn btn-primary">Lưu Package</button>-->
-<!--        </div>-->
-<!--      </form>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Detail Modal &ndash;&gt;-->
-<!--<div class="modal fade" id="detailModal" tabindex="-1">-->
-<!--  <div class="modal-dialog">-->
-<!--    <div class="modal-content">-->
-<!--      <div class="modal-header"><h5>Package Details</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>-->
-<!--      <div class="modal-body" id="detailBody"></div>-->
-<!--      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Scripts &ndash;&gt;-->
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>-->
-<!--<script>-->
-<!--  const apiBase = '/api/packages';-->
-<!--  let allData = [];-->
-<!--  let currentSort = { col: null, asc: true };-->
-
-<!--  async function initApp() {-->
-<!--    try {-->
-<!--      const [sb, pkgs] = await Promise.all([-->
-<!--        fetch('/sidebar').then(r => {-->
-<!--          if (!r.ok) throw new Error("❌ sidebar load failed");-->
-<!--          return r.text();-->
-<!--        }),-->
-<!--        fetch(apiBase).then(r => {-->
-<!--          if (!r.ok) throw new Error("❌ api/packages load failed");-->
-<!--          return r.json();-->
-<!--        })-->
-<!--      ]);-->
-<!--      document.getElementById('sidebar-container').innerHTML = sb;-->
-<!--      allData = pkgs;-->
-<!--      updateMainMargin();-->
-<!--      updateStats();-->
-<!--      renderTable(allData);-->
-<!--    } catch (err) {-->
-<!--      console.error("🚨 initApp error:", err);-->
-<!--      alert("Lỗi khi khởi tạo: " + err.message);-->
-<!--    }-->
-<!--  }-->
-
-
-<!--  function updateMainMargin() {-->
-<!--    const sb = document.querySelector('.sidebar');-->
-<!--    const main = document.querySelector('.main-content');-->
-<!--    main.style.marginLeft = (sb && window.innerWidth >= 992) ? sb.offsetWidth + 'px' : '0';-->
-<!--  }-->
-
-<!--  function updateStats() {-->
-<!--    document.getElementById('stat-total').textContent = allData.length;-->
-<!--    document.getElementById('stat-imported').textContent = allData.filter(p => p.status === 'IMPORTED').length;-->
-<!--    document.getElementById('stat-onshelf').textContent = allData.filter(p => p.status === 'ON_SHELF').length;-->
-<!--    document.getElementById('stat-exported').textContent = allData.filter(p => p.status === 'EXPORTED').length;-->
-<!--    document.getElementById('stat-temp').textContent = (20 + Math.random()*10).toFixed(1) + ' °C';-->
-<!--    document.getElementById('stat-humidity').textContent = (40 + Math.random()*30).toFixed(1) + ' %';-->
-<!--  }-->
-
-<!--  function renderTable(data) {-->
-<!--    const tb = document.getElementById('packageTableBody');-->
-<!--    tb.innerHTML = '';-->
-<!--    data.forEach(pkg => {-->
-<!--      const st = pkg.status || '';-->
-<!--      const cls = st.toLowerCase().replace(/\s/g, '_');-->
-<!--      const icon = st === 'IMPORTED' ? '📥' : st === 'ON_SHELF' ? '📦' : st === 'EXPORTED' ? '🚚' : '';-->
-<!--      const tr = document.createElement('tr');-->
-<!--      tr.innerHTML = `-->
-<!--        <td>${pkg.id || ''}</td>-->
-<!--        <td>${pkg.poId || ''}</td>-->
-<!--        <td>${pkg.productId || ''}</td>-->
-<!--        <td>${pkg.rfid || ''}</td>-->
-<!--        <td>${pkg.beacon_name || ''}</td>-->
-<!--        <td>${pkg.zone || ''}</td>-->
-<!--        <td>${pkg.block || ''}</td>-->
-<!--        <td>${pkg.time_in || ''}</td>-->
-<!--        <td>${pkg.time_out || ''}</td>-->
-<!--        <td><span class="badge status-label status-${cls}">${icon} ${st}</span></td>-->
-<!--        <td>-->
-<!--          <button class="btn btn-info btn-sm me-1" onclick="showDetail('${pkg.id}')"><i class="bi bi-eye"></i></button>-->
-<!--          <button class="btn btn-warning btn-sm me-1" onclick="editPkg('${pkg.id}')"><i class="bi bi-pencil"></i></button>-->
-<!--          <button class="btn btn-danger btn-sm" onclick="deletePkg('${pkg.id}')"><i class="bi bi-trash"></i></button>-->
-<!--        </td>-->
-<!--      `;-->
-<!--      tb.appendChild(tr);-->
-<!--    });-->
-<!--  }-->
-
-<!--  function sortBy(col) {-->
-<!--    currentSort.asc = currentSort.col === col ? !currentSort.asc : true;-->
-<!--    currentSort.col = col;-->
-<!--    const sorted = [...allData].sort((a, b) => {-->
-<!--      const v1 = a[col] || '';-->
-<!--      const v2 = b[col] || '';-->
-<!--      return currentSort.asc ? v1.localeCompare(v2) : v2.localeCompare(v1);-->
-<!--    });-->
-<!--    renderTable(sorted);-->
-<!--  }-->
-
-<!--  function showDetail(id) {-->
-<!--    const pkg = allData.find(p => p.id === id);-->
-<!--    if (!pkg) return;-->
-
-<!--    const get = v => (v && v.trim() !== '') ? v : '';-->
-
-<!--    const detail = `-->
-<!--    <ul class="list-group">-->
-<!--      <li class="list-group-item"><strong>PO ID:</strong> ${get(pkg.poId)}</li>-->
-<!--      <li class="list-group-item"><strong>Product ID:</strong> ${get(pkg.productId)}</li>-->
-<!--      <li class="list-group-item"><strong>RFID:</strong> ${get(pkg.rfid)}</li>-->
-<!--      <li class="list-group-item"><strong>Beacon:</strong> ${get(pkg.beacon_name)}</li>-->
-<!--      <li class="list-group-item"><strong>Zone:</strong> ${get(pkg.zone)}</li>-->
-<!--      <li class="list-group-item"><strong>Block:</strong> ${get(pkg.block)}</li>-->
-<!--      <li class="list-group-item"><strong>Time In:</strong> ${get(pkg.time_in)}</li>-->
-<!--      <li class="list-group-item"><strong>Time Out:</strong> ${get(pkg.time_out)}</li>-->
-<!--      <li class="list-group-item"><strong>Status:</strong> ${get(pkg.status)}</li>-->
-<!--    </ul>-->
-<!--  `;-->
-<!--    document.getElementById('detailBody').innerHTML = detail;-->
-<!--    new bootstrap.Modal(document.getElementById('detailModal')).show();-->
-<!--  }-->
-
-
-<!--  function editPkg(id) {-->
-<!--    const pkg = allData.find(p => p.id === id);-->
-<!--    if (!pkg) return;-->
-<!--    document.getElementById('poId').value = pkg.poId;-->
-<!--    document.getElementById('productId').value = pkg.productId;-->
-<!--    document.getElementById('rfidField').value = pkg.rfid;-->
-<!--    document.getElementById('beaconField').value = pkg.beacon_name;-->
-<!--    new bootstrap.Modal(document.getElementById('packageFormModal')).show();-->
-<!--  }-->
-
-<!--  async function deletePkg(id) {-->
-<!--    if (!confirm(`Bạn có chắc muốn xoá package ID = ${id}?`)) return;-->
-<!--    await fetch(`/api/packages/${id}`, { method: 'DELETE' });-->
-<!--    alert("🗑️ Đã xoá thành công");-->
-<!--    initApp();-->
-<!--  }-->
-
-<!--  let stompClient = null;-->
-<!--  function connectWebSocket() {-->
-<!--    const socket = new SockJS('/ws-package');-->
-<!--    stompClient = Stomp.over(socket);-->
-<!--    stompClient.connect({}, () => {-->
-<!--      console.log("📡 Connected to WebSocket");-->
-<!--      stompClient.subscribe('/topic/package-init', message => {-->
-<!--        const pkg = JSON.parse(message.body);-->
-<!--        showPackageForm(pkg.rfid, pkg.beacon_name);-->
-<!--      });-->
-<!--    });-->
-<!--  }-->
-
-<!--  function showPackageForm(rfid, beaconName) {-->
-<!--    document.getElementById('rfidField').value = rfid;-->
-<!--    document.getElementById('beaconField').value = beaconName;-->
-<!--    const modal = new bootstrap.Modal(document.getElementById('packageFormModal'));-->
-<!--    modal.show();-->
-<!--  }-->
-
-<!--  document.getElementById('packageModalForm').addEventListener('submit', function (e) {-->
-<!--    e.preventDefault();-->
-<!--    const data = {-->
-<!--      rfid: document.getElementById('rfidField').value,-->
-<!--      beacon_name: document.getElementById('beaconField').value,-->
-<!--      poId: document.getElementById('poId').value,-->
-<!--      productId: document.getElementById('productId').value-->
-<!--    };-->
-<!--    fetch('/api/packages/finalize', {-->
-<!--      method: 'POST',-->
-<!--      headers: { 'Content-Type': 'application/json' },-->
-<!--      body: JSON.stringify(data)-->
-<!--    })-->
-<!--            .then(res => {-->
-<!--              if (!res.ok) throw new Error("Lưu thất bại");-->
-<!--              return res.json();-->
-<!--            })-->
-<!--            .then(() => {-->
-<!--              alert("✅ Package saved!");-->
-<!--              location.reload();-->
-<!--            })-->
-<!--            .catch(err => alert(err.message));-->
-<!--  });-->
-
-<!--  document.querySelectorAll('th[data-sort]').forEach(th => {-->
-<!--    th.addEventListener('click', () => sortBy(th.dataset.sort));-->
-<!--  });-->
-
-<!--  window.addEventListener('DOMContentLoaded', () => {-->
-<!--    initApp();-->
-<!--    connectWebSocket();-->
-<!--  });-->
-
-<!--  window.addEventListener('resize', updateMainMargin);-->
-<!--</script>-->
-<!--</body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Test View</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Warehouse</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    body { background: #f5f7fa; font-family: 'Segoe UI', sans-serif; margin: 0; }
+    .sidebar { background-color: #2c3e50; padding: 1rem 0.5rem; position: fixed; top: 0; left: 0; width: fit-content; height: 100vh; overflow-y: auto; z-index: 1000; display: flex; flex-direction: column; gap: 0.25rem; }
+    .sidebar .nav-title { color: #bdc3c7; font-size: .85rem; text-transform: uppercase; padding: 0 1rem; white-space: nowrap; }
+    .sidebar .nav-link { color: #ecf0f1; padding: 10px 16px; border-radius: 5px; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #34495e; border-left: 4px solid #6c75f0; color: #ffffff; }
+    .main-content { padding: 1.5rem; transition: margin-left 0.3s; }
+    @media (max-width: 991.98px) {
+      .sidebar { position: relative; width: 100%; height: auto; flex-direction: row; overflow-x: auto; }
+      .main-content { margin-left: 0 !important; padding-top: 1rem; }
+      .sidebar .nav-title { display: none; }
+    }
+    .stats-box .card { border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+    .stats-box .card h5 { font-size: 1rem; color: #444; }
+    .stats-box .card h4 { font-size: 1.4rem; font-weight: bold; }
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0 1rem; }
+    table thead { background: #6c75f0; color: white; }
+    table thead th { cursor: pointer; text-align: left; padding: .75rem; }
+    table tbody tr { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: box-shadow .2s; }
+    table tbody tr:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    table td { padding: .75rem; vertical-align: middle; background: #fff; }
+    .status-label { display: inline-flex; align-items: center; gap: .3rem; padding: .3rem .8rem; border-radius: 999px; font-size: .85rem; font-weight: 500; text-transform: capitalize; }
+    .status-imported { background: #fff3cd; color: #856404; }
+    .status-on_shelf { background: #d3f9d8; color: #2b8a3e; }
+    .status-exported { background: #d0ebff; color: #1c7ed6; }
+    .filter-select { max-width: 200px; margin-bottom: 1rem; }
+  </style>
 </head>
 <body>
-<h1>It works!</h1>
+
+<div id="sidebar-container"></div>
+
+<div class="main-content">
+  <div class="stats-box mb-4 d-flex flex-wrap gap-3">
+    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>Total Packages</h5><h4 id="stat-total">0</h4></div>
+    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>📥 IMPORTED</h5><h4 id="stat-imported">0</h4></div>
+    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>📦 ON SHELF</h5><h4 id="stat-onshelf">0</h4></div>
+    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>🚚 EXPORTED</h5><h4 id="stat-exported">0</h4></div>
+    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>🌡️ Temp</h5><h4 id="stat-temp">-- °C</h4></div>
+    <div class="card flex-fill text-center p-3 bg-light border-0"><h5>💧 Humidity</h5><h4 id="stat-humidity">-- %</h4></div>
+  </div>
+
+  <div class="card p-4 mb-4">
+    <h2 class="text-center mb-4">📋 Package Form</h2>
+    <form id="packageForm" class="row g-3">
+      <input type="hidden" id="rfidInput"/>
+      <div class="col-md-2"><input type="text" class="form-control" id="beaconNameInput" placeholder="Beacon Name" required/></div>
+      <div class="col-md-2"><input type="text" class="form-control" id="zoneInput" placeholder="Zone" required/></div>
+      <div class="col-md-2"><input type="text" class="form-control" id="blockInput" placeholder="Block" required/></div>
+      <div class="col-md-3"><input type="datetime-local" class="form-control" id="timeInInput" required/></div>
+      <div class="col-md-2"><input type="datetime-local" class="form-control" id="timeOutInput"/></div>
+      <div class="col-md-1 d-grid"><button type="submit" class="btn btn-primary">💾</button></div>
+    </form>
+  </div>
+
+  <select id="filterStatus" class="form-select filter-select mb-3">
+    <option value="">All statuses</option>
+    <option value="IMPORTED">IMPORTED</option>
+    <option value="ON_SHELF">ON_SHELF</option>
+    <option value="EXPORTED">EXPORTED</option>
+  </select>
+
+  <div class="table-container">
+    <table class="table align-middle">
+      <thead>
+      <tr>
+        <th data-sort="id">ID ⇅</th>
+        <th data-sort="poId">PO ID</th>
+        <th data-sort="productId">Product ID</th>
+        <th>RFID</th>
+        <th>Beacon</th>
+        <th>Zone</th>
+        <th>Block</th>
+        <th data-sort="time_in">Time In ⇅</th>
+        <th data-sort="time_out">Time Out ⇅</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody id="packageTableBody"></tbody>
+    </table>
+  </div>
+</div>
+<!-- Modal for PO ID and Product ID -->
+<div class="modal fade" id="packageFormModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="packageModalForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Nhập PO ID và Product ID</h5>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="rfidField">
+          <input type="hidden" id="beaconField">
+          <div class="mb-3">
+            <label for="poId">PO ID</label>
+            <input type="text" class="form-control" id="poId" required>
+          </div>
+          <div class="mb-3">
+            <label for="productId">Product ID</label>
+            <input type="text" class="form-control" id="productId" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lưu Package</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h5>Package Details</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="detailBody"></div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+  const apiBase = '/api/packages';
+  let allData = [];
+  let currentSort = { col: null, asc: true };
+
+  async function initApp() {
+    try {
+      const [sb, pkgs] = await Promise.all([
+        fetch('/sidebar').then(r => {
+          if (!r.ok) throw new Error("❌ sidebar load failed");
+          return r.text();
+        }),
+        fetch(apiBase).then(r => {
+          if (!r.ok) throw new Error("❌ api/packages load failed");
+          return r.json();
+        })
+      ]);
+      document.getElementById('sidebar-container').innerHTML = sb;
+      allData = pkgs;
+      updateMainMargin();
+      updateStats();
+      renderTable(allData);
+    } catch (err) {
+      console.error("🚨 initApp error:", err);
+      alert("Lỗi khi khởi tạo: " + err.message);
+    }
+  }
+
+
+  function updateMainMargin() {
+    const sb = document.querySelector('.sidebar');
+    const main = document.querySelector('.main-content');
+    main.style.marginLeft = (sb && window.innerWidth >= 992) ? sb.offsetWidth + 'px' : '0';
+  }
+
+  function updateStats() {
+    document.getElementById('stat-total').textContent = allData.length;
+    document.getElementById('stat-imported').textContent = allData.filter(p => p.status === 'IMPORTED').length;
+    document.getElementById('stat-onshelf').textContent = allData.filter(p => p.status === 'ON_SHELF').length;
+    document.getElementById('stat-exported').textContent = allData.filter(p => p.status === 'EXPORTED').length;
+    document.getElementById('stat-temp').textContent = (20 + Math.random()*10).toFixed(1) + ' °C';
+    document.getElementById('stat-humidity').textContent = (40 + Math.random()*30).toFixed(1) + ' %';
+  }
+
+  function renderTable(data) {
+    const tb = document.getElementById('packageTableBody');
+    tb.innerHTML = '';
+    data.forEach(pkg => {
+      const st = pkg.status || '';
+      const cls = st.toLowerCase().replace(/\s/g, '_');
+      const icon = st === 'IMPORTED' ? '📥' : st === 'ON_SHELF' ? '📦' : st === 'EXPORTED' ? '🚚' : '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${pkg.id || ''}</td>
+        <td>${pkg.poId || ''}</td>
+        <td>${pkg.productId || ''}</td>
+        <td>${pkg.rfid || ''}</td>
+        <td>${pkg.beacon_name || ''}</td>
+        <td>${pkg.zone || ''}</td>
+        <td>${pkg.block || ''}</td>
+        <td>${pkg.time_in || ''}</td>
+        <td>${pkg.time_out || ''}</td>
+        <td><span class="badge status-label status-${cls}">${icon} ${st}</span></td>
+        <td>
+          <button class="btn btn-info btn-sm me-1" onclick="showDetail('${pkg.id}')"><i class="bi bi-eye"></i></button>
+          <button class="btn btn-warning btn-sm me-1" onclick="editPkg('${pkg.id}')"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="deletePkg('${pkg.id}')"><i class="bi bi-trash"></i></button>
+        </td>
+      `;
+      tb.appendChild(tr);
+    });
+  }
+
+  function sortBy(col) {
+    currentSort.asc = currentSort.col === col ? !currentSort.asc : true;
+    currentSort.col = col;
+    const sorted = [...allData].sort((a, b) => {
+      const v1 = a[col] || '';
+      const v2 = b[col] || '';
+      return currentSort.asc ? v1.localeCompare(v2) : v2.localeCompare(v1);
+    });
+    renderTable(sorted);
+  }
+
+  function showDetail(id) {
+    const pkg = allData.find(p => p.id === id);
+    if (!pkg) return;
+
+    const get = v => (v && v.trim() !== '') ? v : '';
+
+    const detail = `
+    <ul class="list-group">
+      <li class="list-group-item"><strong>PO ID:</strong> ${get(pkg.poId)}</li>
+      <li class="list-group-item"><strong>Product ID:</strong> ${get(pkg.productId)}</li>
+      <li class="list-group-item"><strong>RFID:</strong> ${get(pkg.rfid)}</li>
+      <li class="list-group-item"><strong>Beacon:</strong> ${get(pkg.beacon_name)}</li>
+      <li class="list-group-item"><strong>Zone:</strong> ${get(pkg.zone)}</li>
+      <li class="list-group-item"><strong>Block:</strong> ${get(pkg.block)}</li>
+      <li class="list-group-item"><strong>Time In:</strong> ${get(pkg.time_in)}</li>
+      <li class="list-group-item"><strong>Time Out:</strong> ${get(pkg.time_out)}</li>
+      <li class="list-group-item"><strong>Status:</strong> ${get(pkg.status)}</li>
+    </ul>
+  `;
+    document.getElementById('detailBody').innerHTML = detail;
+    new bootstrap.Modal(document.getElementById('detailModal')).show();
+  }
+
+
+  function editPkg(id) {
+    const pkg = allData.find(p => p.id === id);
+    if (!pkg) return;
+    document.getElementById('poId').value = pkg.poId;
+    document.getElementById('productId').value = pkg.productId;
+    document.getElementById('rfidField').value = pkg.rfid;
+    document.getElementById('beaconField').value = pkg.beacon_name;
+    new bootstrap.Modal(document.getElementById('packageFormModal')).show();
+  }
+
+  async function deletePkg(id) {
+    if (!confirm(`Bạn có chắc muốn xoá package ID = ${id}?`)) return;
+    await fetch(`/api/packages/${id}`, { method: 'DELETE' });
+    alert("🗑️ Đã xoá thành công");
+    initApp();
+  }
+
+  let stompClient = null;
+  function connectWebSocket() {
+    const socket = new SockJS('/ws-package');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, () => {
+      console.log("📡 Connected to WebSocket");
+      stompClient.subscribe('/topic/package-init', message => {
+        const pkg = JSON.parse(message.body);
+        showPackageForm(pkg.rfid, pkg.beacon_name);
+      });
+    });
+  }
+
+  function showPackageForm(rfid, beaconName) {
+    document.getElementById('rfidField').value = rfid;
+    document.getElementById('beaconField').value = beaconName;
+    const modal = new bootstrap.Modal(document.getElementById('packageFormModal'));
+    modal.show();
+  }
+
+  document.getElementById('packageModalForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const data = {
+      rfid: document.getElementById('rfidField').value,
+      beacon_name: document.getElementById('beaconField').value,
+      poId: document.getElementById('poId').value,
+      productId: document.getElementById('productId').value
+    };
+    fetch('/api/packages/finalize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+            .then(res => {
+              if (!res.ok) throw new Error("Lưu thất bại");
+              return res.json();
+            })
+            .then(() => {
+              alert("✅ Package saved!");
+              location.reload();
+            })
+            .catch(err => alert(err.message));
+  });
+
+  document.querySelectorAll('th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => sortBy(th.dataset.sort));
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    initApp();
+    connectWebSocket();
+  });
+
+  window.addEventListener('resize', updateMainMargin);
+</script>
 </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Test View</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>It works!</h1>-->
+<!--</body>-->
+<!--</html>-->
 
